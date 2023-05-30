@@ -11,8 +11,22 @@ export class UserService {
         return this.userModel.find()
     }
 
-    user(userDTO:UserDTO):Promise<User>{
+    async singleUser(_id:string):Promise<User>{
+        return this.userModel.findById(_id)
+
+    }
+
+   async user(userDTO:UserDTO):Promise<User>{
         const user = new this.userModel(userDTO)
         return user.save() ;
     }
+
+    async updateUser(_id:string,userDTO:UserDTO):Promise<User>{
+        return this.userModel.findByIdAndUpdate(_id,userDTO)
+    }
+
+    async deleteuser(_id:string):Promise<User>{
+        return this.userModel.findByIdAndDelete(_id)
+    }
+
 }
