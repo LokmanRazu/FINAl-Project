@@ -1,5 +1,8 @@
 {
     "version":2,
+    "env":{
+        "DATABASE_URL":"mongodb+srv://FINAL-PROJECT:12345@cluster0.u5alfz1.mongodb.net/?retryWrites=true&w=majority"
+    },
     "builds":[{
         "src":"sre/main.ts",
         "use":"@vercel/node"
