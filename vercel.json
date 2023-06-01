@@ -1,0 +1,17 @@
+{
+    "version":2,
+    "builds":[{
+        "src":"sre/main.ts",
+        "use":"@vercel/node"
+    }],
+    "routes":[{
+        "src":"/(.*)",
+        "dest":"src/main.ts",
+        "method":[
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE"
+        ]
+    }]
+}
