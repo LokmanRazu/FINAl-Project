@@ -5,8 +5,12 @@ import { DocumentBuilder,SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
  
-  const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  const app = await NestFactory.create(AppModule,{cors:true});
+  app.enableCors({
+    allowedHeaders: '*',
+    origin: '*',
+    credentials: true,
+  });
   const config = new DocumentBuilder()
   .setTitle('Final-Project')
   .setDescription('The Final API')
