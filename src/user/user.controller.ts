@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { UserService } from "./user.service";
-import { UserDTO } from "./user.dto";
+import { LoginDTO, UserDTO } from "./user.dto";
 import { User } from "./user.type";
 
 @Controller('user')
@@ -22,6 +22,11 @@ export class UserController {
         return this.userService.user(data)
     }
 
+    @Post('/login')
+    login(@Body() data:LoginDTO):{}{
+        return this.userService.login(data)
+    }
+
     @Put('/:_id')
     async updatedUser(@Param('_id') _id: string,@Body() data:UserDTO): Promise<User> {
         return this.userService.updateUser(_id,data)
@@ -32,6 +37,7 @@ export class UserController {
     async deletedUser(@Param('_id')_id:string):Promise<User>{
         return this.userService.deleteuser(_id)
     }
+
 
 
 }
