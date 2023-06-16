@@ -1,4 +1,4 @@
-import { Injectable                                                                                                                                                                                                                                                                                      , UnauthorizedException } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { User } from "./user.type";
@@ -8,52 +8,53 @@ import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel(User.name) private userModel: Model<User>, private jwtService:JwtService) { }
+    constructor(@InjectModel(User.name) private userModel: Model<User>, private jwtService: JwtService) { }
     async users(): Promise<User[]> {
         return await this.userModel.find()
     }
 
-    async singleUser(_id:string):Promise<User>{
+    async singleUser(_id: string): Promise<User> {
         return await this.userModel.findById(_id)
 
     }
 
-   async user(userDTO:UserDTO):Promise<User>{
+    async user(userDTO: UserDTO): Promise<User> {
         const user = new this.userModel(userDTO)
         const saltOrRounds = 10;
         const password = user.password
         const hash = await bcrypt.hash(password, saltOrRounds);
         user.password = hash
-        return user.save() ;
+        return user.save();
     };
 
     //  Login
-
-    async login(loginDTO:LoginDTO){
-        let user = await this.userModel.findOne({email:loginDTO.email})
-        if(!user){
-            throw new UnauthorizedException()
+    async login(loginDTO: LoginDTO): Promise<{ accessToken: string }> {
+        let user = await this.userModel.findOne({ email: loginDTO.email })
+        console.log("User======",user)
+        if (!user) {
+            throw new UnauthorizedException('Invalid email or Password')
         }
-        let match = await bcrypt.compare(loginDTO.password,user.password)
-        console.log("match_++++",match)
-        if(!match){
-            throw new UnauthorizedException()
+        let match = await bcrypt.compare(loginDTO.password, user.password)
+        console.log("match_++++", match)
+        if (!match) {
+            throw new UnauthorizedException('Invalid email or Password')
         }
         const payload = {
-            sub:user._id,
-            name:user.name
+            sub: user._id,
+            name: user.name
         }
+        console.log("payload++++++++++++", payload)
         return {
             accessToken: await this.jwtService.signAsync(payload)
         }
 
     }
 
-    async updateUser(_id:string,userDTO:UserDTO):Promise<User>{
-        return await this.userModel.findByIdAndUpdate(_id,userDTO)
+    async updateUser(_id: string, userDTO: UserDTO): Promise<User> {
+        return await this.userModel.findByIdAndUpdate(_id, userDTO)
     }
 
-    async deleteuser(_id:string):Promise<User>{
+    async deleteuser(_id: string): Promise<User> {
         return await this.userModel.findByIdAndDelete(_id)
     }
 

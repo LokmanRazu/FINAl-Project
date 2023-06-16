@@ -1,14 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { ApiSecurity, ApiTags } from "@nestjs/swagger";
 import { UserService } from "./user.service";
 import { LoginDTO, UserDTO } from "./user.dto";
 import { User } from "./user.type";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
     constructor(private readonly userService: UserService) { }
     @Get()
+    @ApiSecurity("JWT-auth")
+    @UseGuards(AuthGuard())
     async getUsers(): Promise<User[]> {
         return this.userService.users()
     }
